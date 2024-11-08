@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geolocalización de Usuario</title>
+</head>
+<body>
+  <h1>Información de Geolocalización</h1>
+  <p><strong>Hora de Entrada:</strong> <span id="entry-time"></span></p>
+  <p><strong>IP:</strong> <span id="ip"></span></p>
+  <p><strong>País:</strong> <span id="country"></span></p>
+  <p><strong>Estado:</strong> <span id="region"></span></p>
+  <p><strong>Municipio:</strong> <span id="city"></span></p>
+  <p><strong>Ubicación Exacta:</strong> <span id="location"></span></p>
+
+  <script>
+    // Mostrar la hora de entrada
+    const entryTime = new Date();
+    document.getElementById('entry-time').textContent = entryTime.toLocaleString();
+
+    // Función para obtener los datos de geolocalización usando la API IPInfo
+    function getIPInfo() {
+      const token = 'f01c886651ecad'; // Reemplaza esto con tu token de IPInfo
+      const url = `https://ipinfo.io?token=${token}`;
+      
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          // Mostrar la IP, país, estado y municipio
+          document.getElementById('ip').textContent = data.ip;
+          document.getElementById('country').textContent = data.country;
+          document.getElementById('region').textContent = data.region;
+          document.getElementById('city').textContent = data.city;
+        })
+        .catch(error => {
+          console.error("Error al obtener datos de IPInfo:", error);
+        });
+    }
+
+    // Función para obtener la geolocalización exacta usando HTML5
+    function getExactLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          document.getElementById('location').textContent = `Latitud: ${lat}, Longitud: ${lon}`;
+        }, error => {
+          console.error("Error al obtener la ubicación exacta:", error);
+          document.getElementById('location').textContent = "No se pudo obtener la ubicación exacta.";
+        });
+      } else {
+        document.getElementById('location').textContent = "La geolocalización no es compatible con este navegador.";
+      }
+    }
+
+    // Llamar a las funciones para obtener los datos
+    getIPInfo(); // Obtener datos de IPInfo
+    getExactLocation(); // Obtener ubicación exacta con HTML5
+  </script>
+</body>
+</html>
